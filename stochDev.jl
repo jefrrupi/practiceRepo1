@@ -43,27 +43,27 @@ function expandBrackets()
 end
 
 
+
+      ###
+      if op == :* && typeof(po2)==Expr && typeof(po1) == Symbol
+       newExpr = :($po1 * $(po2.args[2]) + $po1 * $( po2.args[3]))end
+       #####
+
 # Flatten the expression
 function flattenExpress(expr)
   op = expr.args[1]
   po1 = expr.args[2]
   po2 = expr.args[3]
-  if op == * && (typeof(po1)==Expr) && typeof(po2)==Symbol
-    #flatten
-    if it is + or -...
-      symbolic link...
-
-      ###
-      if op == :* && typeof(po2)==Expr && typeof(po1) == Symbol
-       newExpr = :($po1 * $(po2.args[2]) + $po1 * $( po2.args[3]))end       
-       #####
-
-
-
-    newExpr = :(po2*po1.args[2] + po2*po1.args[3])
-    #flatten
-  elseif op == * && typeof(po2)==Expr && typeof(po1)==Symbol
-    newExpr = :(po1*po2.args[2] + po1*po2.args[3])
+  if op==:* && typeof(po1)==Expr && typeof(po2)==Symbol
+    if po1.args[1]==:+ || po1.args[1]==:-
+    newExpr = :($po2*$po1.args[2] $po1.args[1] $po2*po1.args[3])
+    #flattenExpress(newExpr)
+    end
+  elseif op == :* && typeof(po2)==Expr && typeof(po1)==Symbol
+    if po2.args[1]==:+ || po2.args[1]==:-
+    newExpr = :($po1*$po2.args[2] $po2.args[1] $po1*$po2.args[3])
+    #flattenExpress(newExpr)
+    end
   elseif op == * && typeof(po1)==Expr && typeof(po2)==Expr
     if po1.args[1] == +
 
@@ -72,6 +72,12 @@ function flattenExpress(expr)
     else if po1.args == *
 
     else # /
+
+  elseif op == :+ && typeof(po1)==Expr && typeof(po2)==Expr
+    if po1.args[1]==:* && typeof(po1.args[2])==Symbol&& typeof(po1.args[3])==
+      Symbol && po2.args[1]==:* && typeof(po2.args[2])==Symbol && typeof(po2.args[3])==Expr
+      newExprr = :($po1 + $(po2.args[2])*$(po2.args[3].args[2])*$(po2.args[3].args[3]) )
+    end
 
   else #flattened
     return newExpr
